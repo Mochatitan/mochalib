@@ -4,6 +4,7 @@
 
 package frc.lib;
 
+import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.NetworkTableListener;
@@ -18,18 +19,27 @@ import frc.lib.Config;
 
 public class LimelightCam {
 
+    private boolean flash = false;
+
     private double lockedApriltag = -1;
     private double lastSeenApriltag = -1;
     private final String namePrefix = "limelight";
     private String name = "default-name";
     private String fullname = "default_fullname";
 
+    NetworkTableInstance inst = NetworkTableInstance.getDefault();
+    NetworkTable masterTable = inst.getTable("vision-table");
+    NetworkTable cameraTable;
+
     public LimelightCam(String name) {
         this.name = name;
         this.fullname = namePrefix + "-" + name;
         HttpCamera httpCamera = new HttpCamera(name, getIP());
 
+        cameraTable = masterTable.getSubTable(name);
         CameraServer.getVideo(httpCamera);
+
+        cameraTable.getEntry("flashers").setBoolean(flash);
 
     }
 
@@ -134,9 +144,13 @@ public class LimelightCam {
         if(getTid() != -1){
             lastSeenApriltag = this.getTid();
         }
-        NetworkTableInstance inst = NetworkTableInstance.getDefault();
-        NetworkTableEntry entry = inst.getTable("vision-table").getEntry("vision-entry");
-        entry.setDouble(5);
+        
+
+        cameraTable.getEntry("tx").setDouble(this.getTx());
+        cameraTable.getEntry("ty").setDouble(this.getTy());
+        cameraTable.getEntry("ta").setDouble(this.getTa());
+        cameraTable.getEntry("tag detected").setBoolean(tagDetected());
+        System.out.println(cameraTable.getEntry("flashers").getBoolean(false));
 
         SmartDashboard.putNumber("apriltag", getTid());
         SmartDashboard.putNumber("Locked apriltag", lockedApriltag);
