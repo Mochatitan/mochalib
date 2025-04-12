@@ -5,6 +5,9 @@ import java.util.function.DoubleSupplier;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 public class TunablePIDController{
     
@@ -15,6 +18,7 @@ public class TunablePIDController{
     private NetworkTable tuningTable;
     private NetworkTable pidTable;
     private NetworkTable controllerTable;
+    private Command updatePID = new InstantCommand(() -> updatePIDValues());
 
     TunablePIDController(String name, double p, double i, double d){
 
@@ -45,8 +49,10 @@ public class TunablePIDController{
         return pidController.calculate(measurement, setpoint);
     }
 
-    public void updatePID(){
+    public void updatePIDValues(){
         pidController.setPID(getP(), getI(), getD());
     }
+
+
 
 }
