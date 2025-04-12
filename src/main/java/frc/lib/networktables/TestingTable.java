@@ -1,4 +1,4 @@
-package frc.lib;
+package frc.lib.networktables;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -9,20 +9,20 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 public class TestingTable{
     
     private NetworkTableInstance networkTableInstance;
-    private NetworkTable testTable;
+    private NetworkTable mochaTable;
     private NetworkTable dataTable;
-    private NetworkTable tuneTable;
+    private NetworkTable inputTable;
 
     private NetworkTable subTable;
 
     TestingTable(String name){ 
         this.networkTableInstance = NetworkTableInstance.getDefault();
-        this.testTable = networkTableInstance.getTable("Testing-Data");
+        this.mochaTable = networkTableInstance.getTable("Mochalib");
 
-        this.subTable = testTable.getSubTable(name);
+        this.subTable = mochaTable.getSubTable(name);
 
         this.dataTable = subTable.getSubTable("data");
-        this.tuneTable = subTable.getSubTable("tuning");
+        this.inputTable = subTable.getSubTable("input");
         
     }
 
